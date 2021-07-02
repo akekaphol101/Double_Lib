@@ -1,0 +1,43 @@
+﻿  Double_Lib.cpp
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(33,11): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(37,11): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(49,25): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(49,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(56,46): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(74,31): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(74,22): warning C4244: 'initializing': conversion from 'int' to 'const float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(75,57): warning C4244: 'argument': conversion from 'float' to '_Tp', possible loss of data
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(75,78): warning C4244: 'argument': conversion from 'const float' to '_Tp', possible loss of data
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(98,31): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(98,22): warning C4244: 'initializing': conversion from 'int' to 'const float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(134,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(61,8): warning C4101: 'height_A': unreferenced local variable
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(170,11): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(174,11): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(186,25): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(186,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(193,46): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(211,31): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(211,22): warning C4244: 'initializing': conversion from 'int' to 'const float', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(212,57): warning C4244: 'argument': conversion from 'float' to '_Tp', possible loss of data
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(212,78): warning C4244: 'argument': conversion from 'const float' to '_Tp', possible loss of data
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(198,8): warning C4101: 'height_A': unreferenced local variable
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(287,19): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\User\Desktop\mydev\Double_Lib\Double_Lib\Double_Lib.cpp(288,29): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Double_Lib.vcxproj -> C:\Users\User\Desktop\mydev\Double_Lib\x64\Debug\Double_Lib.exe
