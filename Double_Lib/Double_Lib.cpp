@@ -49,6 +49,8 @@ void show_histogram(string const& name, Mat1b const& image)
 
 	int countA = 0;
 	float height_A[630];
+	float high = 0;
+	int col_high = 0;
 	Mat dst;
 	for (int i = 0; i < image.cols; i++)
 	{
@@ -62,15 +64,50 @@ void show_histogram(string const& name, Mat1b const& image)
 		float const height = cvRound(column_sum * hist_height / max);
 		line(hist_image, Point(i + 10, (hist_height - height) + 50), Point(i + 10, hist_height), Scalar::all(255));
 
-		cout << "AAA " << height << endl;
+		if (height > high) {
+			high = height;
+			col_high = i;
+		}
+		//cout << "AAA " << image.cols << endl;
 	}
+
+
+	float H_AVG = 0;
+	// Loop find Average low
+	for (int i = 0; i < image.cols; i++)
+	{
+		float column_sum = 0;
+
+		for (int k = 0; k < image.rows; k++)
+		{
+			column_sum += image.at<unsigned char>(k, i);
+		}
+
+		float const height = cvRound(column_sum * hist_height / max);
+
+		if (i > 500 && i <= 1000)
+		{
+			cout << "H--" << height << endl;
+			H_AVG += height;
+
+		}
+	}
+	H_AVG = H_AVG / 200;			//best value for average 
+	float H_Minus = H_AVG - high;
+
+	//cout << "high " << high << endl;
+	//cout << "col high " << col_high << endl;
+	cout << "high Average------ " << H_AVG << endl;
+	cout << "high-- Minus==== " << H_Minus << endl;
+
+
 
 	Mat canny_output;
 	Canny(hist_image, canny_output, 50, 50 * 2);
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	findContours(canny_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
-
+	
 	// create hull array for convex hull points
 	vector< vector<Point> > hull(contours.size());
 	for (int i = 0; i < contours.size(); i++) {
@@ -84,7 +121,7 @@ void show_histogram(string const& name, Mat1b const& image)
 	float reN = 0;
 	reN = contourArea(hull[0]) - contourArea(contours[0]);
 	//cout << " Result: " << reN << endl;
-	if (reN > 660) {
+	if (H_AVG > 40) {
 		cout << " Defect Detection  " << endl;
 		cout << "===================" << endl;
 	}
@@ -122,7 +159,7 @@ int Recheck(Mat imageOriginal) {
 	
 	//status = Center_Circle(imgCanny, imageOriginal);
 
-	Rect myROI(0, 0, 110, 450);
+	Rect myROI(0, 0, 110, 500);
 	Mat croppedRef(imgRz, myROI);
 
 	Mat imgCrop;
@@ -132,15 +169,13 @@ int Recheck(Mat imageOriginal) {
 
 
 	imshow("REz", imgCrop);
-	rotate(imgCrop, imgCrop, ROTATE_90_COUNTERCLOCKWISE);
-	imshow("Rotate", imgCrop);
-	//imshow("Th", imgTh);
-	//imshow("Canny", imgCanny);
+	
+	Mat imgSobelx;
+	Sobel(imgCrop, imgSobelx, CV_8U, 1, 0, 3, 1, 0, BORDER_DEFAULT);
+	rotate(imgSobelx, imgSobelx, ROTATE_90_COUNTERCLOCKWISE);
+	imshow("Sobel X ", imgSobelx);
 
-
-
-
-	show_histogram("name", imgCrop);
+	show_histogram("name", imgSobelx);
 
 	return status;
 }
