@@ -43,33 +43,47 @@ void show_histogram(string const& name, Mat1b const& image)
 	// create matrix for histogram
 	Mat hist;
 	int channels[] = { 0 };
-	float maxN = max / 50;
+	float maxN = max / 10;
 	float const hist_height = maxN;
 	Mat3b hist_image = Mat3b::zeros(hist_height + 10, bins + 20);
 
 	int countA = 0;
 	float height_A[630];
-	float high = 0;
-	int col_high = 0;
+	float high_1 = 0;
+	float high_2 = 0;
+	int col_high_1 = 0;
+	int col_high_2 = 0;
 	Mat dst;
+	int sum_col = 0;
 	for (int i = 0; i < image.cols; i++)
 	{
 		float column_sum = 0;
-
+		
 		for (int k = 0; k < image.rows; k++)
 		{
 			column_sum += image.at<unsigned char>(k, i);
 		}
 
 		float const height = cvRound(column_sum * hist_height / max);
-		line(hist_image, Point(i + 10, (hist_height - height) + 50), Point(i + 10, hist_height), Scalar::all(255));
-
-		if (height > high) {
-			high = height;
-			col_high = i;
+		line(hist_image, Point(i + 10, (hist_height - height) + 20), Point(i + 10, hist_height), Scalar::all(255));
+		//cout << "hishigh " << hist_height << "------ " << hist_height - height << endl;
+		if (height > high_1 && i < 500) {
+			high_1 = height;
+			col_high_1 = i;
 		}
-		//cout << "AAA " << image.cols << endl;
+
+		if(height > high_2 && i >= 1000) {
+			high_2 = height;
+			col_high_2 = i;
+		}
+		sum_col += column_sum;
+		
+		//cout << "column summ  " << column_sum << endl;
 	}
+	int AVG_sum = sum_col/(image.cols * image.rows);
+	cout << "summ  " << AVG_sum << endl;
+	cout << "high1   " << high_1<< " col_1  " << col_high_1 << endl;
+	cout << "high 2  " << high_2<< " col 2 "<< col_high_2 << endl;
 
 
 	float H_AVG = 0;
@@ -85,20 +99,20 @@ void show_histogram(string const& name, Mat1b const& image)
 
 		float const height = cvRound(column_sum * hist_height / max);
 
-		if (i > 500 && i <= 1000)
+		if (i >= col_high_1  && i <= col_high_2)
 		{
-			cout << "H--" << height << endl;
+			//cout << "H--" << height << endl;
 			H_AVG += height;
 
 		}
 	}
-	H_AVG = H_AVG / 200;			//best value for average 
-	float H_Minus = H_AVG - high;
+	H_AVG = H_AVG/10000;			//best value for average 
+	//float H_Minus = H_AVG - high;
 
 	//cout << "high " << high << endl;
 	//cout << "col high " << col_high << endl;
 	cout << "high Average------ " << H_AVG << endl;
-	cout << "high-- Minus==== " << H_Minus << endl;
+	//cout << "high-- Minus==== " << H_Minus << endl;
 
 
 
@@ -115,13 +129,13 @@ void show_histogram(string const& name, Mat1b const& image)
 	}
 
 	drawContours(hist_image, contours, 0, Scalar(0, 0, 255), 2, 8, vector<Vec4i>(), 0, Point());
-	drawContours(hist_image, hull, 0, Scalar(0, 255, 0), 2, 8, vector<Vec4i>(), 0, Point());
-	cout << " AreaC: " << contourArea(contours[0]) << endl;
-	cout << " AreaH: " << contourArea(hull[0]) << endl;
+	//drawContours(hist_image, hull, 0, Scalar(0, 255, 0), 2, 8, vector<Vec4i>(), 0, Point());
+	//cout << " AreaC: " << contourArea(contours[0]) << endl;
+	//cout << " AreaH: " << contourArea(hull[0]) << endl;
 	float reN = 0;
 	reN = contourArea(hull[0]) - contourArea(contours[0]);
 	//cout << " Result: " << reN << endl;
-	if (H_AVG > 40) {
+	if (H_AVG > 7) {
 		cout << " Defect Detection  " << endl;
 		cout << "===================" << endl;
 	}
@@ -145,19 +159,12 @@ void show_histogram(string const& name, Mat1b const& image)
 
 
 
-
-
-
 int Recheck(Mat imageOriginal) {
 	Mat imgG, imgCut, imgRz, imgTh, imgCanny;
 	int status = 0;
 	imgRz = imageOriginal.clone();
 	cvtColor(imgRz, imgG, COLOR_BGR2GRAY);
-	//blur(imgG, imgG, Size(3, 3));
-	//threshold(imgG, imgTh, 120, 255, THRESH_BINARY_INV); //Threshold the gray.
-	//Canny(imgG, imgCanny, 300, 550);
 	
-	//status = Center_Circle(imgCanny, imageOriginal);
 
 	Rect myROI(0, 0, 110, 500);
 	Mat croppedRef(imgRz, myROI);
