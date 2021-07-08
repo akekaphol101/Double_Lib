@@ -58,7 +58,7 @@ void show_histogram(string const& name, Mat1b const& image)
 	for (int i = 0; i < image.cols; i++)
 	{
 		float column_sum = 0;
-		
+
 		for (int k = 0; k < image.rows; k++)
 		{
 			column_sum += image.at<unsigned char>(k, i);
@@ -72,18 +72,18 @@ void show_histogram(string const& name, Mat1b const& image)
 			col_high_1 = i;
 		}
 
-		if(height > high_2 && i >= 1000) {
+		if (height > high_2 && i >= 1000) {
 			high_2 = height;
 			col_high_2 = i;
 		}
 		sum_col += column_sum;
-		
+
 		//cout << "column summ  " << column_sum << endl;
 	}
-	int AVG_sum = sum_col/(image.cols * image.rows);
+	int AVG_sum = sum_col / (image.cols * image.rows);
 	cout << "summ  " << AVG_sum << endl;
-	cout << "high1   " << high_1<< " col_1  " << col_high_1 << endl;
-	cout << "high 2  " << high_2<< " col 2 "<< col_high_2 << endl;
+	cout << "high1   " << high_1 << " col_1  " << col_high_1 << endl;
+	cout << "high 2  " << high_2 << " col 2 " << col_high_2 << endl;
 
 
 	float H_AVG = 0;
@@ -99,14 +99,14 @@ void show_histogram(string const& name, Mat1b const& image)
 
 		float const height = cvRound(column_sum * hist_height / max);
 
-		if (i >= col_high_1  && i <= col_high_2)
+		if (i >= col_high_1 && i <= col_high_2)
 		{
 			//cout << "H--" << height << endl;
 			H_AVG += height;
 
 		}
 	}
-	H_AVG = H_AVG/10000;			//best value for average 
+	H_AVG = H_AVG / 10000;			//best value for average 
 	//float H_Minus = H_AVG - high;
 
 	//cout << "high " << high << endl;
@@ -121,7 +121,7 @@ void show_histogram(string const& name, Mat1b const& image)
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	findContours(canny_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
-	
+
 	// create hull array for convex hull points
 	vector< vector<Point> > hull(contours.size());
 	for (int i = 0; i < contours.size(); i++) {
@@ -164,7 +164,7 @@ int Recheck(Mat imageOriginal) {
 	int status = 0;
 	imgRz = imageOriginal.clone();
 	cvtColor(imgRz, imgG, COLOR_BGR2GRAY);
-	
+
 
 	Rect myROI(0, 0, 110, 500);
 	Mat croppedRef(imgRz, myROI);
@@ -172,11 +172,11 @@ int Recheck(Mat imageOriginal) {
 	Mat imgCrop;
 	// Copy the data into new matrix
 	croppedRef.copyTo(imgCrop);
-	
+
 
 
 	imshow("REz", imgCrop);
-	
+
 	Mat imgSobelx;
 	Sobel(imgCrop, imgSobelx, CV_8U, 1, 0, 3, 1, 0, BORDER_DEFAULT);
 	rotate(imgSobelx, imgSobelx, ROTATE_90_COUNTERCLOCKWISE);
