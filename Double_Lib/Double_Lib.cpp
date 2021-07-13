@@ -12,15 +12,14 @@
 using namespace cv;
 using namespace std;
 using namespace std::chrono;
-int largest_area = 0;
-int largest_contour_index = 0;
-Rect bounding_rect;
-Mat src_gray;
-RNG rng(12345);
-Scalar color = Scalar(rng.uniform(0, 256), rng.uniform(0, 256), rng.uniform(0, 256));
+
+int P_score = 7;				//Parameter for check double lib.
+int P_divide = 10000;			//Parameter for divide high average.
+
 
 void show_histogram(string const& name, Mat1b const& image)
 {
+	float H_AVG = 0;
 	float max = 0;
 	for (int i = 0; i < image.cols; i++)
 	{
@@ -33,8 +32,7 @@ void show_histogram(string const& name, Mat1b const& image)
 			}
 		}
 	}
-	//cout << "Max " << max  << endl;
-
+	
 	// Set histogram bins count
 	int bins = image.cols;
 	// Set ranges for histogram bins
@@ -47,74 +45,48 @@ void show_histogram(string const& name, Mat1b const& image)
 	float const hist_height = maxN;
 	Mat3b hist_image = Mat3b::zeros(hist_height + 10, bins + 20);
 
-	int countA = 0;
-	float height_A[630];
 	float high_1 = 0;
 	float high_2 = 0;
 	int col_high_1 = 0;
 	int col_high_2 = 0;
-	Mat dst;
-	int sum_col = 0;
 	for (int i = 0; i < image.cols; i++)
 	{
 		float column_sum = 0;
-
 		for (int k = 0; k < image.rows; k++)
 		{
 			column_sum += image.at<unsigned char>(k, i);
 		}
-
 		float const height = cvRound(column_sum * hist_height / max);
 		line(hist_image, Point(i + 10, (hist_height - height) + 20), Point(i + 10, hist_height), Scalar::all(255));
-		//cout << "hishigh " << hist_height << "------ " << hist_height - height << endl;
 		if (height > high_1 && i < 500) {
 			high_1 = height;
 			col_high_1 = i;
 		}
-
 		if (height > high_2 && i >= 1000) {
 			high_2 = height;
 			col_high_2 = i;
 		}
-		sum_col += column_sum;
-
-		//cout << "column summ  " << column_sum << endl;
 	}
-	int AVG_sum = sum_col / (image.cols * image.rows);
-	cout << "summ  " << AVG_sum << endl;
-	cout << "high1   " << high_1 << " col_1  " << col_high_1 << endl;
-	cout << "high 2  " << high_2 << " col 2 " << col_high_2 << endl;
-
-
-	float H_AVG = 0;
+	cout << "high initial  " << high_1 << " column initial  " << col_high_1 << endl;
+	cout << "high fisish   " << high_2 << " column finish   " << col_high_2 << endl;
+	
 	// Loop find Average low
 	for (int i = 0; i < image.cols; i++)
 	{
 		float column_sum = 0;
-
 		for (int k = 0; k < image.rows; k++)
 		{
 			column_sum += image.at<unsigned char>(k, i);
 		}
-
 		float const height = cvRound(column_sum * hist_height / max);
-
 		if (i >= col_high_1 && i <= col_high_2)
 		{
-			//cout << "H--" << height << endl;
 			H_AVG += height;
-
 		}
 	}
-	H_AVG = H_AVG / 10000;			//best value for average 
-	//float H_Minus = H_AVG - high;
-
-	//cout << "high " << high << endl;
-	//cout << "col high " << col_high << endl;
-	cout << "high Average------ " << H_AVG << endl;
-	//cout << "high-- Minus==== " << H_Minus << endl;
-
-
+	H_AVG = H_AVG / P_divide;			//best value for average 
+	
+	cout << "high average :  " << H_AVG << endl;
 
 	Mat canny_output;
 	Canny(hist_image, canny_output, 50, 50 * 2);
@@ -129,13 +101,7 @@ void show_histogram(string const& name, Mat1b const& image)
 	}
 
 	drawContours(hist_image, contours, 0, Scalar(0, 0, 255), 2, 8, vector<Vec4i>(), 0, Point());
-	//drawContours(hist_image, hull, 0, Scalar(0, 255, 0), 2, 8, vector<Vec4i>(), 0, Point());
-	//cout << " AreaC: " << contourArea(contours[0]) << endl;
-	//cout << " AreaH: " << contourArea(hull[0]) << endl;
-	float reN = 0;
-	reN = contourArea(hull[0]) - contourArea(contours[0]);
-	//cout << " Result: " << reN << endl;
-	if (H_AVG > 7) {
+	if (H_AVG > P_score) {
 		cout << " Defect Detection  " << endl;
 		cout << "===================" << endl;
 	}
@@ -153,47 +119,32 @@ void show_histogram(string const& name, Mat1b const& image)
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
 	cout << "Time taken by function: " << duration.count() << " milliseconds" << endl;
-	//imshow(name, hist_image);
 }
 
 
-
-
-int Recheck(Mat imageOriginal) {
-	Mat imgG, imgCut, imgRz, imgTh, imgCanny;
+int Double_lib(Mat imageOriginal) {
+	Mat imgG, imgRz, imgCrop, imgSobelx;
 	int status = 0;
-	imgRz = imageOriginal.clone();
+	imgRz = imageOriginal.clone();				//Copy image to imgRz.
 	cvtColor(imgRz, imgG, COLOR_BGR2GRAY);
-
 
 	Rect myROI(0, 0, 110, 500);
 	Mat croppedRef(imgRz, myROI);
 
-	Mat imgCrop;
 	// Copy the data into new matrix
 	croppedRef.copyTo(imgCrop);
+	imshow("Crop image", imgCrop);
 
-
-
-	imshow("REz", imgCrop);
-
-	Mat imgSobelx;
-	Sobel(imgCrop, imgSobelx, CV_8U, 1, 0, 3, 1, 0, BORDER_DEFAULT);
+	Sobel(imgCrop, imgSobelx, CV_8U, 1, 0, 3, 1, 0, BORDER_DEFAULT);			//Sobel axis x
 	rotate(imgSobelx, imgSobelx, ROTATE_90_COUNTERCLOCKWISE);
-	imshow("Sobel X ", imgSobelx);
-
-	show_histogram("name", imgSobelx);
-
+	imshow("Sobel X image", imgSobelx);
+	show_histogram("name", imgSobelx);						//Call function histogram final.
 	return status;
 }
 
-
-
 int main(int argc, const char* argv[]) {
-
-	Mat imgOri;
-	Mat imgRz, imgG, imgCn, imgMr, imgPoLog, imgPoLin, imgRePoLin, imgRePoLog;
-	int recheck = 0;
+	Mat imgOri, imgRz;
+	int result = 0;
 
 	string folder("img/*.jpg");
 	vector<String> fn;
@@ -210,15 +161,11 @@ int main(int argc, const char* argv[]) {
 		//Preprocessing
 		imgOri = imread(fn[i]);
 		resize(imgOri, imgRz, Size(), 0.5, 0.5); //Half Resize 1280*1040 to 640*520 pixcel.
-		imshow("ori", imgRz);
+		imshow("Original image", imgRz);
 
-		recheck = Recheck(imgRz);
-		//imshow("Resize", imgRz);
-		//cout << " Last status" << recheck << endl;
-
+		result = Double_lib(imgRz);				//Call function check double lib problem.
 		waitKey(0);
 	}
 	waitKey(0);
 	return 0;
-
 }
