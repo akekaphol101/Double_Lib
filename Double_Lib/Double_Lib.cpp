@@ -138,7 +138,7 @@ int Double_lib(Mat imageOriginal) {
 	Sobel(imgCrop, imgSobelx, CV_8U, 1, 0, 3, 1, 0, BORDER_DEFAULT);			//Sobel axis x
 	rotate(imgSobelx, imgSobelx, ROTATE_90_COUNTERCLOCKWISE);
 	imshow("Sobel X image", imgSobelx);
-	show_histogram("name", imgSobelx);						//Call function histogram final.
+	show_histogram("Histogram image", imgSobelx);											//Call function histogram final.
 	return status;
 }
 
@@ -150,7 +150,11 @@ int main(int argc, const char* argv[]) {
 	vector<String> fn;
 	glob(folder, fn, false);
 	vector<Mat> images;
-	size_t count = fn.size(); //number of png files in images folder.\
+	size_t count = fn.size();			 //number of png files in images folder.\
+
+
+	 P_score = 7;						//Parameter for check double lib.
+	 P_divide = 10000;					//Parameter for divide high average.
 
 	//Check number of images.
 	cout << "image in folder  " << count << endl;
